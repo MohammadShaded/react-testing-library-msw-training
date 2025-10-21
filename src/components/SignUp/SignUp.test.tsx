@@ -1,5 +1,6 @@
 import React from "react";
-import { render } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { setupServer } from "msw/node";
 import SignUp from "./";
 import { handlers } from "./handlers";
@@ -15,7 +16,11 @@ describe("SignUp Component", () => {
   describe("Validation", () => {
     it("should display validation errors for invalid email", async () => {
       render(<SignUp />);
-      // use jest preview to debug your test
+      // type an invalid email and blur the field to trigger validation
+      await userEvent.type(screen.getByLabelText(/Email Address/i), "not-an-email");
+      await userEvent.tab();
+
+      expect(await screen.findByText(/Enter a valid email/i)).toBeInTheDocument();
       debug();
     });
 
